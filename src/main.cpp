@@ -30,6 +30,7 @@ Core::Shader_Loader shaderLoader;
 
 GLuint skyboxTexture;
 
+
 std::vector<std::string> faces
 {
 	"skybox/right.jpg",
@@ -56,6 +57,12 @@ Core::RenderContext sphereContext;
 obj::Model cube;
 Core::RenderContext cubeContext;
 
+float lastX = 300;
+float lastY = 300;
+
+float xoffset;
+float yoffset;
+
 
 glm::mat4 cameraMatrix, perspectiveMatrix;
 
@@ -74,14 +81,23 @@ void keyboard(unsigned char key, int x, int y)
 	case 'e': cameraPos += glm::cross(cameraDir, glm::vec3(1, 0, 0)) * moveSpeed; break;
 	case 'q': cameraPos -= glm::cross(cameraDir, glm::vec3(1, 0, 0)) * moveSpeed; break;
 	}
+
 }
+void mouse(int x, int y)
+{
+	xoffset = (x - lastX) * 0.01;
+	yoffset = (y - lastY) * 0.01;
+	lastX = x;
+	lastY = y;
+}
+
 
 glm::mat4 createCameraMatrix()
 {
+	
 	// Obliczanie kierunku patrzenia kamery (w plaszczyznie x-z) przy uzyciu zmiennej cameraAngle kontrolowanej przez klawisze.
 	cameraDir = glm::vec3(cosf(cameraAngle), 0.0f, sinf(cameraAngle));
 	glm::vec3 up = glm::vec3(0, 1, 0);
-
 	return Core::createViewMatrix(cameraPos, cameraDir, up);
 }
 
@@ -241,6 +257,7 @@ int main(int argc, char** argv)
 
 	init();
 	glutKeyboardFunc(keyboard);
+	glutPassiveMotionFunc(mouse);
 	glutDisplayFunc(renderScene);
 	glutIdleFunc(idle);
 
